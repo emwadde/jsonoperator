@@ -1,5 +1,5 @@
 {
-  "name": "jsonoperator",
+  "name": "@emwadde/jsonoperator",
   "version": "1.0.0",
   "description": "A lightweight rule engine for evaluating logical rules against a JSON context object",
   "type": "module",
