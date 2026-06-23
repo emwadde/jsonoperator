@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./build",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "checkJs": true,
     "declaration": true,
-    "emitDeclarationOnly": false,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler"
+    "emitDeclarationOnly": true,
+    "outDir": "."
   },
-  "include": ["src"]
+  "include": ["*.js"],
+  "exclude": ["node_modules"]
 }
