@@ -2,7 +2,7 @@
  * Retrieves a nested value from an object using a dot-notation path.
  * If an array is encountered mid-path, maps over its elements and continues resolving.
  *
- * @param {unknown} obj - The object to resolve from
+ * @param {Record<string, any>} obj - The object to resolve from
  * @param {string} path - Dot-notation path e.g. "record.case_access.user_id"
  * @returns {unknown} The resolved value, or undefined if the path doesn't exist
  */
@@ -66,7 +66,7 @@ export function toComparable(value) {
 /**
  * Resolves a value from context if prefixed with "$", otherwise returns it as a raw value.
  *
- * @param {unknown} context - The context object to resolve paths from
+ * @param {Record<string, any>} context - The context object to resolve paths from
  * @param {string} value - A "$"-prefixed path or a raw value
  * @returns {unknown} The resolved or raw value
  */
@@ -80,7 +80,7 @@ export function resolveValue(context, value) {
 /**
  * Evaluates a single rule against a context object.
  *
- * @param {unknown} context - The context object
+ * @param {Record<string, any>} context - The context object
  * @param {string} lhs - Left-hand side: a "$"-prefixed path or raw value
  * @param {"in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains"} operator
  * @param {string} rhs - Right-hand side: a "$"-prefixed path or raw value
@@ -159,7 +159,7 @@ export function checkRule(context, lhs, operator, rhs) {
  * Validates a nested group of rules against a context object.
  * Supports recursive AND/OR grouping.
  *
- * @param {unknown} context - The context object
+ * @param {Record<string, any>} context - The context object
  * @param {RuleGroup} group - The rule group to evaluate
  * @returns {boolean}
  *
