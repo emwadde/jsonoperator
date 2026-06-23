@@ -1,15 +1,20 @@
 {
   "name": "@emwadde/jsonoperator",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "description": "A lightweight rule engine for evaluating logical rules against a JSON context object",
   "type": "module",
-  "main": "index.js",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "exports": {
-    ".": "./index.js"
+    ".": "./build/index.js"
   },
   "files": [
-    "index.js"
+    "build",
+    "README.md"
   ],
+  "scripts": {
+    "build": "tsc"
+  },
   "keywords": [
     "rule-engine",
     "json",
@@ -21,5 +26,8 @@
   "license": "MIT",
   "engines": {
     "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }
