@@ -1,6 +1,6 @@
 {
   "name": "@emwadde/jsonoperator",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "A lightweight rule engine for evaluating logical rules against a JSON context object",
   "repository": {
     "type": "git",
