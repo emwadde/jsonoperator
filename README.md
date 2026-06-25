@@ -1,6 +1,7 @@
 # @emwadde/jsonoperator
 
-# Still under development, do not use in production yet
+## Still under development, do not use in production yet
+
 A lightweight, dependency-free rule evaluation engine. Define conditional logic as plain data structures and evaluate them against any context object at runtime.
 
 Rules are portable — they can be stored in a database, config file, or passed over a network, and evaluated whenever needed.

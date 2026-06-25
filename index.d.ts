@@ -2,11 +2,11 @@
  * Retrieves a nested value from an object using a dot-notation path.
  * If an array is encountered mid-path, maps over its elements and continues resolving.
  *
- * @param {Record<string, any>} obj - The object to resolve from
+ * @param {unknown} obj - The object to resolve from
  * @param {string} path - Dot-notation path e.g. "record.case_access.user_id"
  * @returns {unknown} The resolved value, or undefined if the path doesn't exist
  */
-export function getNestedValue(obj: Record<string, any>, path: string): unknown;
+export function getNestedValue(obj: unknown, path: string): unknown;
 /**
  * Attempts to convert a value to a boolean.
  * Handles actual booleans as well as the strings "true" and "false".
@@ -26,23 +26,23 @@ export function toComparable(value: unknown): number | null;
 /**
  * Resolves a value from context if prefixed with "$", otherwise returns it as a raw value.
  *
- * @param {Record<string, any>} context - The context object to resolve paths from
- * @param {string} value - A "$"-prefixed path or a raw value
+ * @param {unknown} context - The context object to resolve paths from
+ * @param {unknown} value - A "$"-prefixed path or a raw value
  * @returns {unknown} The resolved or raw value
  */
-export function resolveValue(context: Record<string, any>, value: string): unknown;
+export function resolveValue(context: unknown, value: unknown): unknown;
 /**
  * Evaluates a single rule against a context object.
  *
- * @param {Record<string, any>} context - The context object
- * @param {string} lhs - Left-hand side: a "$"-prefixed path or raw value
- * @param {"in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains"} operator
- * @param {string} rhs - Right-hand side: a "$"-prefixed path or raw value
+ * @param {unknown} context - The context object
+ * @param {unknown} lhs - Left-hand side: a "$"-prefixed path or raw value
+ * @param {"in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains"} operator
+ * @param {unknown} rhs - Right-hand side: a "$"-prefixed path or raw value
  * @returns {boolean}
  */
-export function checkRule(context: Record<string, any>, lhs: string, operator: "in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains", rhs: string): boolean;
+export function checkRule(context: unknown, lhs: unknown, operator: "in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains", rhs: unknown): boolean;
 /**
- * @typedef {[string, "in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains", string]} Rule
+ * @typedef {[unknown, "in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains", unknown]} Rule
  */
 /**
  * @typedef {Object} RuleGroup
@@ -53,7 +53,7 @@ export function checkRule(context: Record<string, any>, lhs: string, operator: "
  * Validates a nested group of rules against a context object.
  * Supports recursive AND/OR grouping.
  *
- * @param {Record<string, any>} context - The context object
+ * @param {unknown} context - The context object
  * @param {RuleGroup} group - The rule group to evaluate
  * @returns {boolean}
  *
@@ -61,19 +61,19 @@ export function checkRule(context: Record<string, any>, lhs: string, operator: "
  * validateRules(context, {
  *   op: "AND",
  *   rules: [
- *     ["$user.verified", "equals", "true"],
+ *     ["$user.verified", "equals_bool", true],
  *     {
  *       op: "OR",
  *       rules: [
- *         ["$user.is_super", "equals", "true"],
+ *         ["$user.is_super", "equals_bool", true],
  *         ["$user.user_id", "in", "$record.case_access.user_id"],
  *       ],
  *     },
  *   ],
  * })
  */
-export function validateRules(context: Record<string, any>, group: RuleGroup): boolean;
-export type Rule = [string, "in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains", string];
+export function validateRules(context: unknown, group: RuleGroup): boolean;
+export type Rule = [unknown, "in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains", unknown];
 export type RuleGroup = {
     /**
      * - Logical operator to apply across the rules

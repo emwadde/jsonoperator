@@ -2,7 +2,7 @@
  * Retrieves a nested value from an object using a dot-notation path.
  * If an array is encountered mid-path, maps over its elements and continues resolving.
  *
- * @param {Record<string, any>} obj - The object to resolve from
+ * @param {unknown} obj - The object to resolve from
  * @param {string} path - Dot-notation path e.g. "record.case_access.user_id"
  * @returns {unknown} The resolved value, or undefined if the path doesn't exist
  */
@@ -10,10 +10,9 @@ export function getNestedValue(obj, path) {
   const keys = path.split(".");
 
   /**
-   * 
-   * @param {*} current 
-   * @param {*} remainingKeys 
-   * @returns {*}
+   * @param {unknown} current - The current value being traversed
+   * @param {string[]} remainingKeys - The remaining path keys to resolve
+   * @returns {unknown} The resolved value, or undefined if the path doesn't exist
    */
   function resolve(current, remainingKeys) {
     if (remainingKeys.length === 0) return current;
@@ -22,12 +21,16 @@ export function getNestedValue(obj, path) {
     const [key, ...rest] = remainingKeys;
 
     if (Array.isArray(current)) {
+      // Fans out over array elements and continues resolving on each.
+      // Note: built-in array properties (e.g. "length") are not accessible
+      // via path notation as a result — the array is always iterated, never
+      // treated as a plain value. To be addressed in a future version.
       return current.map((item) => resolve(item, remainingKeys)).flat();
     }
 
     if (typeof current !== "object") return undefined;
 
-    return resolve(current[key], rest);
+    return resolve((/** @type {Record<string, unknown>} */ (current))[key], rest);
   }
 
   return resolve(obj, keys);
@@ -66,12 +69,12 @@ export function toComparable(value) {
 /**
  * Resolves a value from context if prefixed with "$", otherwise returns it as a raw value.
  *
- * @param {Record<string, any>} context - The context object to resolve paths from
- * @param {string} value - A "$"-prefixed path or a raw value
+ * @param {unknown} context - The context object to resolve paths from
+ * @param {unknown} value - A "$"-prefixed path or a raw value
  * @returns {unknown} The resolved or raw value
  */
 export function resolveValue(context, value) {
-  if (value.startsWith("$")) {
+  if (typeof value === "string" && value.startsWith("$")) {
     return getNestedValue(context, value.slice(1));
   }
   return value;
@@ -80,10 +83,10 @@ export function resolveValue(context, value) {
 /**
  * Evaluates a single rule against a context object.
  *
- * @param {Record<string, any>} context - The context object
- * @param {string} lhs - Left-hand side: a "$"-prefixed path or raw value
- * @param {"in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains"} operator
- * @param {string} rhs - Right-hand side: a "$"-prefixed path or raw value
+ * @param {unknown} context - The context object
+ * @param {unknown} lhs - Left-hand side: a "$"-prefixed path or raw value
+ * @param {"in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains"} operator
+ * @param {unknown} rhs - Right-hand side: a "$"-prefixed path or raw value
  * @returns {boolean}
  */
 export function checkRule(context, lhs, operator, rhs) {
@@ -102,21 +105,25 @@ export function checkRule(context, lhs, operator, rhs) {
     }
 
     case "equals": {
-      const lb = toBoolean(left);
-      const rb = toBoolean(right);
-      if (lb !== null || rb !== null) {
-        return (lb ?? toBoolean(right)) === (rb ?? toBoolean(left));
-      }
       return left === right;
     }
 
     case "not_equals": {
+      return left !== right;
+    }
+
+    case "equals_bool": {
       const lb = toBoolean(left);
       const rb = toBoolean(right);
-      if (lb !== null || rb !== null) {
-        return (lb ?? toBoolean(right)) !== (rb ?? toBoolean(left));
-      }
-      return left !== right;
+      if (lb === null || rb === null) return false;
+      return lb === rb;
+    }
+
+    case "not_equals_bool": {
+      const lb = toBoolean(left);
+      const rb = toBoolean(right);
+      if (lb === null || rb === null) return false;
+      return lb !== rb;
     }
 
     case "greater_than": {
@@ -146,7 +153,7 @@ export function checkRule(context, lhs, operator, rhs) {
 }
 
 /**
- * @typedef {[string, "in" | "not_in" | "equals" | "not_equals" | "greater_than" | "less_than" | "contains", string]} Rule
+ * @typedef {[unknown, "in" | "not_in" | "equals" | "not_equals" | "equals_bool" | "not_equals_bool" | "greater_than" | "less_than" | "contains", unknown]} Rule
  */
 
 /**
@@ -159,7 +166,7 @@ export function checkRule(context, lhs, operator, rhs) {
  * Validates a nested group of rules against a context object.
  * Supports recursive AND/OR grouping.
  *
- * @param {Record<string, any>} context - The context object
+ * @param {unknown} context - The context object
  * @param {RuleGroup} group - The rule group to evaluate
  * @returns {boolean}
  *
@@ -167,11 +174,11 @@ export function checkRule(context, lhs, operator, rhs) {
  * validateRules(context, {
  *   op: "AND",
  *   rules: [
- *     ["$user.verified", "equals", "true"],
+ *     ["$user.verified", "equals_bool", true],
  *     {
  *       op: "OR",
  *       rules: [
- *         ["$user.is_super", "equals", "true"],
+ *         ["$user.is_super", "equals_bool", true],
  *         ["$user.user_id", "in", "$record.case_access.user_id"],
  *       ],
  *     },
