@@ -1,6 +1,7 @@
 # @emwadde/jsonoperator
 
-## Still under development, do not use in production yet
+> [!NOTE]
+> In development, but only a major version will bring breaking changes
 
 A lightweight, dependency-free rule evaluation engine. Define conditional logic as plain data structures and evaluate them against any context object at runtime.
 
