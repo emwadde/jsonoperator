@@ -7,7 +7,8 @@
     "checkJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
-    "outDir": "."
+    "outDir": ".",
+    "types": ["node"]
   },
   "include": ["*.js"],
   "exclude": ["node_modules"]
