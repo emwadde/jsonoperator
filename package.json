@@ -15,7 +15,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc"
+    "types": "tsc"
   },
   "keywords": [
     "rule-engine",
